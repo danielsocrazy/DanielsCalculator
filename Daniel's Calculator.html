@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daniel's Cute Scientific Calculator</title>
+    <style>
+        body {
+            background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAAcABQDAREAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQEB1fEwQIRAAQHITFBYRAkMIFhGBkaEII0KxwRVS0fAkM2JyglKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQH1vEQAQIDABEhMQVBUWETInGBBhNhsQYykaEII0KxwRVL6DI4fAkM2JyglKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9b6f//Z');
+            background-size: cover;
+            background-repeat: no-repeat;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            color: white;
+        }
+
+        .calculator {
+            width: 400px;
+            margin: 50px auto;
+            padding: 30px;
+            border: 2px solid #ccc;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        }
+
+        .title {
+            font-size: 2em;
+            color: #ff69b4;
+            margin-bottom: 20px;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #ff69b4; }
+            to { text-shadow: 0 0 20px #ff1493; }
+        }
+
+        .display {
+            width: 100%;
+            height: 60px;
+            margin-bottom: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            font-size: 1.8em;
+            text-align: right;
+            padding: 10px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 10px;
+            background-color: #ffb6c1;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px #ff69b4;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff69b4;
+            transform: scale(1.1);
+        }
+
+        button:active {
+            transform: translateY(2px);
+        }
+
+        .mode-buttons {
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .shift, .alpha {
+            background-color: #ff1493;
+        }
+
+        .extra-functions {
+            display: none;
+        }
+
+        .shift-active .extra-functions {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">Daniel's Cute Scientific Calculator</div>
+    <div class="calculator">
+        <input type="text" class="display" id="display" disabled>
+        <div class="buttons">
+            <!-- Row 1 -->
+            <button onclick="clearDisplay()">C</button>
+            <button onclick="deleteLast()">←</button>
+            <button onclick="appendValue('(')">(</button>
+            <button onclick="appendValue(')')">)</button>
+            <button onclick="appendValue('√(')">√</button>
+            <!-- Row 2 -->
+            <button onclick="appendValue('7')">7</button>
+            <button onclick="appendValue('8')">8</button>
+            <button onclick="appendValue('9')">9</button>
+            <button onclick="appendValue('/')">/</button>
+            <button onclick="appendValue('sin(')">sin</button>
+            <!-- Row 3 -->
+            <button onclick="appendValue('4')">4</button>
+            <button onclick="appendValue('5')">5</button>
+            <button onclick="appendValue('6')">6</button>
+            <button onclick="appendValue('*')">*</button>
+            <button onclick="appendValue('cos(')">cos</button>
+            <!-- Row 4 -->
+            <button onclick="appendValue('1')">1</button>
+            <button onclick="appendValue('2')">2</button>
+            <button onclick="appendValue('3')">3</button>
+            <button onclick="appendValue('-')">-</button>
+            <button onclick="appendValue('tan(')">tan</button>
+            <!-- Row 5 -->
+            <button onclick="appendValue('0')">0</button>
+            <button onclick="appendValue('.')">.</button>
+            <button onclick="appendValue('+')">+</button>
+            <button onclick="calculate()">=</button>
+            <button onclick="appendValue('log(')">log</button>
+            <!-- Row 6 (Scientific Mode) -->
+            <button onclick="appendValue('ln(')">ln</button>
+            <button onclick="appendValue('exp(')">exp</button>
+            <button onclick="appendValue('x²')">x²</button>
+            <button onclick="appendValue('^')">^</button>
+            <button onclick="appendValue('e')">e</button>
+            <!-- Row 7 -->
+            <button onclick="appendValue('log2(')">log₂</button>
+            <button onclick="appendValue('M+')">M+</button>
+            <button onclick="appendValue('factorial')">n!</button>
+            <button onclick="appendValue('hyp')">hyp</button>
+            <button onclick="appendValue('M-')">M-</button>
+        </div>
+        <div class="mode-buttons">
+            <button onclick="toggleMode()">Standard / Scientific Mode</button>
+            <button onclick="shift()">Shift</button>
+            <button onclick="alpha()">Alpha</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+        let shiftMode = false;
+        let scientificMode = false;
+
+        function appendValue(value) {
+            display.value += value;
+            playSound();
+        }
+
+        function clearDisplay() {
+            display.value = '';
+            playSound();
+        }
+
+        function calculate() {
+            try {
+                let result = display.value
+                    .replace(/√\(/g, 'Math.sqrt(')
+                    .replace(/log2\(/g, 'Math.log2(')
+                    .replace(/log\(/g, 'Math.log10(')
+                    .replace(/ln\(/g, 'Math.log(')
+                    .replace(/\^/g, '**')
+                    .replace(/e/g, 'Math.E')
+                    .replace(/x²/g, '**2')
+                    .replace(/factorial/g, 'factorial')
+                    .replace(/hyp/g, 'Math.hypot');
+                display.value = eval(result);
+            } catch {
+                display.value = 'Error';
+            }
+            playSound();
+        }
+
+        function playSound() {
+            const audio = new Audio('https://freesound.org/data/previews/413/413854_5121236-lq.mp3');
+            audio.play();
+        }
+
+        function deleteLast() {
+            display.value = display.value.slice(0, -1);
+            playSound();
+        }
+
+        function shift() {
+            shiftMode = !shiftMode;
+            const calculator = document.querySelector('.calculator');
+            if (shiftMode) {
+                calculator.classList.add('shift-active');
+            } else {
+                calculator.classList.remove('shift-active');
+            }
+        }
+
+        function alpha() {
+            display.value += 'Alpha';
+            playSound();
+        }
+
+        function toggleMode() {
+            scientificMode = !scientificMode;
+            alert(scientificMode ? "Scientific Mode Activated" : "Standard Mode Activated");
+        }
+    </script>
+</body>
+</html>
